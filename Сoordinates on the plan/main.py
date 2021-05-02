@@ -51,8 +51,6 @@ for i in range(len(boxes)):
 # Поворачивание исходного изображения и нахождения на нём объекта
 webCamFeed = True
 pathImage = "Car.png"
-#cap = cv2.VideoCapture(1)
-#cap.set(10, 160)
 heightImg = 480
 widthImg = 640
 kheight = 720/heightImg
