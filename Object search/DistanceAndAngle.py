@@ -21,7 +21,7 @@ def getDistance (x,y,w,h):
     sizeYpx=((y21-y11)+(y22-y12))/2
     sizePX=sizeXpx+sizeYpx
     sizeXm=float(config["forklift positioning"]["lengthForklift"])
-    sizeYm=float(config["forklift positioning"]["widthForklift"])
+    sizeYm=float(config["forklift positioning"]["heightForklift"])
     sizeM=sizeXm+sizeYm
     #sizeM=float(config["QR-code"]["sizeM"])
     focus=int(config["forklift positioning"]["focus"])
@@ -49,7 +49,7 @@ def getAngle (distance,x,y,w,h):
     disPoint12Center=np.hypot(abs(coordinates[0]-point12[0]),abs(coordinates[1] -point12[1]))
     disPoint21Center=np.hypot(abs(coordinates[0]-point21[0]),abs(coordinates[1] -point21[1]))
     disPoint22Center=np.hypot(abs(coordinates[0]-point22[0]),abs(coordinates[1] -point22[1]))
-    ratioPXinM=(np.hypot((float(config["forklift positioning"]["lengthForklift"])),(float(config["forklift positioning"]["widthForklift"])))/2)/((disPoint11Center+disPoint12Center+disPoint21Center+disPoint22Center)/4)
+    ratioPXinM=(np.hypot((float(config["forklift positioning"]["lengthForklift"])),(float(config["forklift positioning"]["heightForklift"])))/2)/((disPoint11Center+disPoint12Center+disPoint21Center+disPoint22Center)/4)
     # Находим расстояние от центра изображения до центра прямоугольника (в пикселях)
     differenceX=abs(center[0]-coordinates[0])
     differenceY = abs(center[1] - coordinates[1])

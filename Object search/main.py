@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import DistanceAndAngle
 
+
 net = cv2.dnn.readNet("yolov3.weights", "yolov3.cfg")
 classes = []
 with open("coco.names.txt","r") as f:
@@ -9,7 +10,7 @@ with open("coco.names.txt","r") as f:
 layer_names = net.getLayerNames()
 output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
 
-image=cv2.imread("Forklift.png")
+image=cv2.imread("truck.png")
 height, width, channels=image.shape
 blob= cv2.dnn.blobFromImage(image, 0.00392, (416, 416), (0,0,0), True, crop=False)
 net.setInput(blob)
@@ -23,7 +24,7 @@ for out in outs:
         scores=detection[5:]
         class_id=np.argmax(scores)
         confidence=scores[class_id]
-        if confidence > 0.5:
+        if confidence > 0.2:
             center_x=int(detection[0]*width)
             center_y = int(detection[1] * height)
             #Координаты прямоугольника
@@ -36,7 +37,7 @@ for out in outs:
             confidences.append(float(confidence))
             class_ids.append(class_id)
 
-indexes=cv2.dnn.NMSBoxes(boxes, confidences, 0.5,0.4)
+indexes=cv2.dnn.NMSBoxes(boxes, confidences, 0.4,0.3)
 font=cv2.FONT_HERSHEY_PLAIN
 #Отображение прямоугольников
 for i in range(len(boxes)):
@@ -50,6 +51,9 @@ for i in range(len(boxes)):
         angle=DistanceAndAngle.getAngle(distance,x,y,w,h)
         print("Угол: ", angle)
         cv2.circle(image, (int((x+x+w)/2),int((y+y+h)/2)), 3, (0, 255, 0), -1)
+#print(len(boxes))
+if len(boxes)==0:
+    print("Погрузчик не обнаружен")
 
 cv2.imshow("Results", image)
 cv2.waitKey(0)
