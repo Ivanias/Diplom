@@ -8,7 +8,7 @@ heightImg = 480
 widthImg = 640
 kheight = 761/heightImg
 kwidth = 1564/widthImg
-image = cv2.imread("newpog.png")
+image = cv2.imread("overviewcamera.png")
 fon=cv2.imread("fon.png") # Белый лист
 image,fon,x,y,w,h=imagePreparation.truckDetection(image,fon,x,y,w,h,kheight,kwidth)
 
