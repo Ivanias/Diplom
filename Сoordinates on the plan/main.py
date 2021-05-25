@@ -13,8 +13,7 @@ fon=cv2.imread("fon.png") # Белый лист
 image,fon,x,y,w,h=imagePreparation.truckDetection(image,fon,x,y,w,h,kheight,kwidth)
 
 webCamFeed = True
-pathImage = "newzona.png"
-plan=cv2.imread('plan.png') # План склада
+pathImage = "workzone.png"
 finalPlan=cv2.imread('finalPlan.png') # План склада
 count = 0
 
@@ -31,7 +30,7 @@ imgContours = img.copy()
 imgBigContour = img.copy()
 contours, hierarchy = cv2.findContours(imgThreshold, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 cv2.drawContours(imgContours, contours, -1, (0, 255, 0), 10)
-cv2.imshow("imgContours", imgContours)
+#cv2.imshow("imgContours", imgContours)
 
 # Нахождение самого большого контура и поворот изображения
 biggest, maxArea = imagePreparation.biggestContour(contours)
@@ -60,41 +59,9 @@ if biggest.size != 0:
     countX=0
     countY1=0
     countY2=0
-    for i in range(len(contours1[0])):
-        countX = countX + contours1[0][i][0][0]
-        if i==0:
-            countY1=contours1[0][i][0][1]
-            continue
-        if contours1[0][i][0][1]/contours1[0][0][0][1]<=1.15:
-            if contours1[0][i][0][1]/contours1[0][0][0][1]>= 0.85:
-                countY1 = countY1 + contours1[0][i][0][1]
-            else:
-                countY2=countY2+contours1[0][i][0][1]
-                if i != len(contours1[0]) - 1:
-                    continue
-        else:
-            countY2 = countY2 + contours1[0][i][0][1]
-        if i == len(contours1[0])-1:
-            countX=countX/len(contours1[0])
-            if countY1>countY2:
-                countYT=countY1
-                countY1=countY2
-                countY2=countYT
-            countY1=countY1/(len(contours1[0])/2)
-            countY2=countY2/(len(contours1[0])/2)
+    coord1, coord2=imagePreparation.getCoordinates(countX,countY1,countY2,contours1)
 
-    coord1=[countX,countY1]
-    coord2=[countX,countY2]
-
-    import configparser
-    config = configparser.ConfigParser()  # создаём объекта парсера
-    config.read("settings.ini")  # читаем конфиг
-    sizeXm=float(config["forklift positioning"]["lengthForklift"])
-    sizeYm=float(config["forklift positioning"]["widthForklift"])
-    sizePX=((coord2[1]-coord1[1])/sizeXm)*sizeYm
-
-    cv2.rectangle(newfon, (int(coord1[0]), int(coord1[1])), (int(coord2[0]+sizePX), int(coord2[1])), (0, 255, 0), 2) # Рисование на белом листе прямоугольника, ограничивающий объект
-    cv2.imshow("inew", newfon)
+    newfon=imagePreparation.getRectangle(coord1,coord2,newfon)
 
     imgThreshold2 = imagePreparation.imagePreparation1(newfon)
 
@@ -111,9 +78,9 @@ if biggest.size != 0:
         biggest1 = imagePreparation.reorder(biggest2)
         cv2.drawContours(imgBigContour2, biggest2, -1, (0, 255, 255), 20)  # DRAW THE BIGGEST CONTOUR
         imgBigContour2 = imagePreparation.drawRectangle(imgBigContour2, biggest2, 2)
-        cv2.imshow("imgBigContour2", imgBigContour2)
+        #cv2.imshow("imgBigContour2", imgBigContour2)
         cv2.drawContours(newfon, contours2, -1, (255, 0, 0), 1)
-        plan=imagePreparation.coordinatesOnThePlan(biggest2,newfon,plan,finalPlan)
+        plan=imagePreparation.coordinatesOnThePlan(biggest2,newfon,finalPlan)
 
 else:
     print("Ошибка: нет замкнутых контуров")
